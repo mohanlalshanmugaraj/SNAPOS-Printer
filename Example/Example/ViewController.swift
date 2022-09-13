@@ -1,53 +1,27 @@
+//
+//  ViewController.swift
+//  Example
+//
+//  Created by GongXiang on 12/8/16.
+//  Updated by Pradeep Sakharelia on 15/05/19
+//  Copyright © 2016 Kevin. All rights reserved.
+//
 
-# ESC/POS Printer Driver for Swift
-
-# Description
-Swift ticket printer framework for ESC/POS-compatible thermal printers
-
-
-### Features
-* Supports connect bluetooth printer.
-* Create printable ticket easily.
-
-## Requirements
-* iOS 9.0+
-* Swift 5.0
-
-## Installation
-### CocoaPods
-#### iOS 9 and newer
-Printer is available on CocoaPods. Simply add the following line to your podfile:
-
-```
-# For latest release in cocoapods
-pod 'Printer'
-```
-
-### Carthage
-
-```
-github "KevinGong2013/Printer"
-```
-
-### Swift Package Manager
-File -> Add Package -> Enter Package URL 
-```
-https://github.com/KevinGong2013/Printer
-```
-
-## Getting Started
-### Import
-
-```swift
+import UIKit
 import Printer
 
-```
+class ViewController: UIViewController {
 
-### Create ESC/POS Ticket
+    private let bluetoothPrinterManager = BluetoothPrinterManager()
+    private let dummyPrinter = DummyPrinter()
+ 
+    @IBAction func touchPrint(sender: UIButton) {
 
-``` swift 
+        guard let image = UIImage(named: "demo") else {
+            return
+        }
 
-var ticket = Ticket(
+        var ticket = Ticket(
             .title("Restaurant"),
             .blank,
             .plainText("Palo Alto Californlia 94301"),
@@ -77,27 +51,19 @@ var ticket = Ticket(
         
         ticket.feedLinesOnHead = 2
         ticket.feedLinesOnTail = 3
-
-```
-
-### Write Ticket to Hardware
-
-``` swift
-
-// connect your pirnter&print ticket.
-private let bluetoothPrinterManager = BluetoothPrinterManager()
-private let dummyPrinter = DummyPrinter()
-
- if bluetoothPrinterManager.canPrint {
-    bluetoothPrinterManager.print(ticket)
-  }
-dummyPrinter.print(ticket)
-
-```
-
-### Ticket && Blocks
-[TODO]
-
-### Notes
-- Send data to your own Bluetooth Manager is possible
-  
+        
+        if bluetoothPrinterManager.canPrint {
+            bluetoothPrinterManager.print(ticket)
+        }
+        
+        dummyPrinter.print(ticket)
+        
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let vc = segue.destination as? BluetoothPrinterSelectTableViewController {
+            vc.sectionTitle = "Choose Bluetooth Printer"
+            vc.printerManager = bluetoothPrinterManager
+        }
+    }
+}
