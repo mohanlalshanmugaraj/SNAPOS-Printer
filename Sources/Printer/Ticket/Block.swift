@@ -20,7 +20,7 @@ public protocol Attribute {
 
 public struct Block: Printable {
 
-    public static var defaultFeedPoints: UInt8 = 55
+    public static var defaultFeedPoints: UInt8 = 60
     
     private let feedPoints: UInt8
     private let dataProvider: BlockDataProvider
